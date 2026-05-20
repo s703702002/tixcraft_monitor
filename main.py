@@ -68,7 +68,7 @@ def check_tickets():
         return []
 
 def main():
-    print("開始監控拓元票務...")
+    print("開始監控拓元票務...", f"目標網址: {TARGET_URL}")
     notified = set()  # 避免重複通知同一區域
 
     while True:
