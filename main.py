@@ -21,24 +21,24 @@ def notify_mac(title, message):
     # 跳出系統通知 + 播放音效
     os.system(f"""osascript -e 'display notification "{message}" with title "{title}" sound name "Glass"'""")
 
+def debug_html():
+    resp = SESSION.get(TARGET_URL, timeout=10)
+    soup = BeautifulSoup(resp.text, "html.parser")
 
-# resp = SESSION.get(TARGET_URL, timeout=10)
-# soup = BeautifulSoup(resp.text, "html.parser")
+    # 存成檔案方便你用瀏覽器開來看
+    with open("debug.html", "w", encoding="utf-8") as f:
+        f.write(resp.text)
 
-# # 存成檔案方便你用瀏覽器開來看
-# with open("debug.html", "w", encoding="utf-8") as f:
-#     f.write(resp.text)
+    print("狀態碼:", resp.status_code)
+    print("已存成 debug.html")
 
-# print("狀態碼:", resp.status_code)
-# print("已存成 debug.html")
-
-# # 印出所有含「票」「sold」「buy」的文字節點
-# for tag in soup.find_all(True):
-#     text = tag.get_text(strip=True)
-#     cls = tag.get("class", [])
-#     if any(k in text.lower() for k in ["售完", "sold", "已售"]) or \
-#        any(k in str(cls).lower() for k in ["buy", "sold", "ticket", "btn"]):
-#         print(f"<{tag.name} class={cls}>: {text[:80]}")
+    # 印出所有含「票」「sold」「buy」的文字節點
+    for tag in soup.find_all(True):
+        text = tag.get_text(strip=True)
+        cls = tag.get("class", [])
+        if any(k in text.lower() for k in ["售完", "sold", "已售"]) or \
+        any(k in str(cls).lower() for k in ["buy", "sold", "ticket", "btn"]):
+            print(f"<{tag.name} class={cls}>: {text[:80]}")
 
 def check_tickets():
     try:
@@ -67,6 +67,7 @@ def check_tickets():
         print(f"[ERROR] {e}")
         return []
 
+
 def main():
     print("開始監控拓元票務...", f"目標網址: {TARGET_URL}")
     notified = set()  # 避免重複通知同一區域
@@ -89,3 +90,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # debug_html()
